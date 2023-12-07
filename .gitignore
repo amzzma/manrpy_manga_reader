@@ -4,4 +4,3 @@ pics/*
 !pics/rename.py
 /data_json/*
 temp
-*.jpg

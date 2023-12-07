@@ -247,4 +247,4 @@ if __name__ == "__main__":
     # sh.refresh_shelf_json()
     # sh.update_cover("book1", "cover/02.jpg")
     # sh.delete_book("book3")
-    
+    pass
