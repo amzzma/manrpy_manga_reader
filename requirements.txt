@@ -1,0 +1,11 @@
+Cython==0.29.33
+kivy==master
+pyjniu==1.6.1
+buildozer==https://github.com//kivy/buildozer/archive/master.zip
+https://github.com/kivymd/KivyMD/archive/master.zip
+PIL
+pdfminer.six
+charset_normalizer==2.1.1
+cryptography
+cffi
+pycparser
