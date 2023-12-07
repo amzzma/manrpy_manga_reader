@@ -1,0 +1,33 @@
+<book_shelf_screen>:
+    id: screen0
+    radius: [25, 0, 0, 0]
+    md_bg_color: app.theme_cls.primary_color
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {'top': 1}  # 将 MDBoxLayout 定位到窗口的顶部
+        canvas.before:
+            Color:
+                rgba: 0.5, 0.5, 0.5, 1  # 设置背景颜色为红色，格式为 (R, G, B, A)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        MDTopAppBar:
+            title: "BookShelf"
+            left_action_items: [["menu", lambda x: app.callback_l(x)]]
+            right_action_items: [["dots-vertical", lambda x: app.callback_r(x)]]
+        MDScrollView:
+            id: scrollview0
+            MDGridLayout:
+                id: grid0
+                cols: 3
+                spacing: dp(10)
+                padding: dp(10)
+                size_hint_y: None
+                height: self.minimum_height
+                canvas.before:
+                    Color:
+                        rgba: 0.5, 0.5, 0.5, 1  # 设置背景颜色为红色，格式为 (R, G, B, A)
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size

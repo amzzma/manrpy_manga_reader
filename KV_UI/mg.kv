@@ -1,0 +1,28 @@
+<manga_screen>:
+    orientation: 'vertical'
+
+    MDCarousel:
+        id: carousel
+        direction: 'left'  # 设置滑动方向为左
+        on_index: app.update_page_indicator(self.index)
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: dp(24)
+
+        MDLabel:
+            id: page_indicator
+            size_hint_y: None
+            valign: 'bottom'
+            width: dp(24)
+            pos_hint: {'center_x': 0.2}
+            text: 'Page 1'
+
+        MDRaisedButton:
+            id: manga_butt
+            text: 'BACK'
+            size_hint_y: None
+            width: dp(24)  # 调整按钮的宽度
+            pos_hint: {'center_x': 0.8}
+

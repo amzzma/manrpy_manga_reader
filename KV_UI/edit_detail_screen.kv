@@ -1,0 +1,43 @@
+<edit_detail_screen>:
+    id: screen1
+    radius: [25, 0, 0, 0]
+    md_bg_color: app.theme_cls.primary_color
+
+    MDScrollView:
+        orientation: "vertical"
+        pos_hint: {'top': 1}  # 将 MDBoxLayout 定位到窗口的顶部
+        canvas.before:
+            Color:
+                rgba: 0.5, 0.5, 0.5, 1  # 设置背景颜色为红色，格式为 (R, G, B, A)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        MDList:
+            id: container
+
+            OneLineListItem:
+                id: cover_pic
+                text: 'cover_pic'
+                theme_text_color: 'Custom'
+                text_color: 1, 1, 1, 1
+
+            OneLineListItem:
+                id: chapter_pic
+                text: 'chapter_pic'
+                theme_text_color: 'Custom'
+                text_color: 1, 1, 1, 1
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(48)
+
+                MDRaisedButton:
+                    id: edit_detail_butt
+                    text: 'BACK'
+                    size_hint_y: None
+                    width: dp(120)
+                    pos_hint: {'center_x': 0.5}
+
+
