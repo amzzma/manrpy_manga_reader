@@ -1,0 +1,23 @@
+{
+    "chapter 48": {
+        "cover_path": "cover/02.jpg",
+        "name": "chapter 48",
+        "book_path": "pics/test_x/ 48",
+        "book_len": 25,
+        "book_type": "jpg"
+    },
+    "chapter 49": {
+        "cover_path": "cover/02.jpg",
+        "name": "chapter 49",
+        "book_path": "pics/test_x/ 49",
+        "book_len": 35,
+        "book_type": "jpg"
+    },
+    "chapter 50": {
+        "cover_path": "cover/02.jpg",
+        "name": "chapter 50",
+        "book_path": "pics/test_x/ 50",
+        "book_len": 31,
+        "book_type": "jpg"
+    }
+}

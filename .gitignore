@@ -2,5 +2,4 @@ __pycache__/
 test*/
 pics/*
 !pics/rename.py
-/data_json/*
 temp
