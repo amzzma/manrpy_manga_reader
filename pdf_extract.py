@@ -5,7 +5,7 @@ from pdfminer.high_level import extract_pages
 from pdfminer.layout import LTImage, LTFigure
 
 import logging
-# 设置pdfminer的日志级别为WARNING或更高级别，以取消INFO级别的日志
+
 logging.getLogger('pdfminer').setLevel(logging.WARNING)
 
 
