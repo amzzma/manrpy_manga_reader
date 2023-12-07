@@ -145,7 +145,6 @@ class log_screen(MDScreen, TouchBehavior):
         f = open("develop_log.txt", mode="r", encoding="utf-8")
         devlog_content = f.readlines()
         devlog_lines = devlog_content
-        # print(devlog_lines)
         devlog_grid = self.ids.devlog_grid
 
         for line in devlog_lines:
@@ -157,18 +156,12 @@ class MangaPage(MDCarousel):
     def __init__(self, image, window_size, **kwargs):
         super().__init__(**kwargs)
         self.size = window_size
-        # print(f'Screen Size: {Window.width}x{Window.height}\nself.size: {window_size}')
-
         self.add_widget(MangaImage(source=image, window_size=window_size))
-        # print(self.size)
 
 
 class MangaImage(MDCarousel):
     def __init__(self, source, window_size, **kwargs):
         super().__init__(**kwargs)
-        # print(source)
-        # print(window_size)
-        # print(f'Screen Size: {Window.width}x{Window.height}')
         card0 = MDCard(
             size_hint_y=None,
             size_hint=(None, None),
@@ -188,7 +181,6 @@ class MangaImage(MDCarousel):
         self.add_widget(card0)
 
     def toggle_scale(self, scatter):
-        # print("tete")
         if scatter.scale == 1.0:
             scatter.scale = 2.0
         else:
@@ -330,7 +322,6 @@ class App(MDApp):
                 padding=0,
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),
             )
-            # book = Book("02.jpg", f"{i['name']}")
 
             img = Image(
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.8),
@@ -355,8 +346,6 @@ class App(MDApp):
             grid0.add_widget(card2)
 
     def build_book_detail_screen(self):
-        # print(f'Screen Size: {Window.width}x{Window.height}\nself.size: {self.window_size}')
-
         self.book_detail_screen.ids.grid0.spacing = self.window_size[0] * 0.04
         self.book_detail_screen.ids.grid0.padding = self.window_size[0] * 0.045
         for i in self.book_detail.book_data:
@@ -421,7 +410,6 @@ class App(MDApp):
                 text=f"{icon}",
                 halign="center",
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.2)
-                # size=(self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275),
             )
             if self.device == 1:
                 md_label.size = (self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275)
@@ -452,7 +440,6 @@ class App(MDApp):
                 padding=0,
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275), 
             )
-            # book = Book("02.jpg", f"{i['name']}")
 
             img = Image(
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.8),
@@ -497,7 +484,6 @@ class App(MDApp):
             )
             img = Image(
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.8),
-                # size=(self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275), 
                 source=f"{self.book_shelf.books_data[i]['cover_path']}",
                 size_hint=(None, None),
                 fit_mode="fill",
@@ -545,7 +531,6 @@ class App(MDApp):
                 padding=0,
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),  # size=("120dp", "213dp")
             )
-            # book = Book("02.jpg", f"{i['name']}")
 
             img = Image(
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.8),
@@ -580,7 +565,6 @@ class App(MDApp):
                 
         def edit_chapter():
             try:
-                # print(card_id)
                 self.build_edit_chapter_screen(card_id)
                 self.sm.current = "screen10"
             except Exception as e:
@@ -770,7 +754,6 @@ class App(MDApp):
     def add_book_by_zip(self, path):
         def support_gbk(zip_file: zipfile.ZipFile):
             name_to_info = zip_file.NameToInfo
-            # copy map first
             for name, info in name_to_info.copy().items():
                 real_name = name.encode('cp437').decode('gbk')
                 if real_name != name:
@@ -803,7 +786,6 @@ class App(MDApp):
 
             def support_gbk(zip_file: zipfile.ZipFile):
                 name_to_info = zip_file.NameToInfo
-                # copy map first
                 for name, info in name_to_info.copy().items():
                     real_name = name.encode('cp437').decode('gbk')
                     if real_name != name:
