@@ -9,6 +9,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 from kivy.utils import platform
+
 if platform == "android":
     from jnius import cast
     from jnius import autoclass
@@ -16,26 +17,19 @@ if platform == "android":
 
 def rename_files_in_folder(folder_path):
     if not os.path.exists(folder_path) or not os.path.isdir(folder_path):
-        # print(f"The folder '{folder_path}' does not exist or is not a directory.")
         return
 
     files = sorted(os.listdir(folder_path))
 
     for index, filename in enumerate(files):
-        # 获取文件扩展名（文件格式）
         file_name, file_extension = os.path.splitext(filename)
-
-        # 构造新的文件名，使用字符串格式化
         new_filename = f"{index:04d}" + file_extension
         new_filepath = os.path.join(folder_path, new_filename)
-
-        # 重命名文件
+        
         os.rename(os.path.join(folder_path, filename), new_filepath)
-        # print(f"Renamed {filename} to {new_filename}")
 
 def resize_pic(path, target_resolution: tuple, fill_color=(230, 255, 255)):
     image = Image.open(path)
-    # target_resolution = (1200, 1775)
     image.thumbnail(target_resolution)
     new_image = Image.new('RGB', target_resolution, fill_color)
     left = (target_resolution[0] - image.width) // 2
@@ -57,24 +51,16 @@ def delete_director(path):
                     delete_recursively(child)
             file.delete()
 
-        # 获取当前应用的 Java 类名
         Context = autoclass('android.content.Context')
         File = autoclass('java.io.File')
-
-        # 获取应用程序上下文
         context = cast('android.content.Context', autoclass('org.kivy.android.PythonActivity').mActivity)
-
-        # 获取应用的私有文件目录
         app_files_dir = context.getFilesDir()
 
-        # 构建应用私有文件目录下的 temp 目录
         temp_directory_path = File(app_files_dir, path)
         logging.info(f"temp_directory_path:{temp_directory_path.getAbsolutePath()}")
         
         try:
-            # 调用递归删除方法
             delete_recursively(temp_directory_path)
-            # print(f"Directory '{temp_directory_path.getAbsolutePath()}' successfully deleted.")
         except Exception as e:
             logging.error(f"{e}")
 
@@ -93,7 +79,6 @@ class Book_shelf:
         self.book_max_label = len(self.books_data) - 1
         self.check_json()
 
-
     def refresh_shelf(self):
         f = open('data_json/book_shelf.json', 'r')
         self.books_data = json.load(f)
@@ -104,7 +89,6 @@ class Book_shelf:
         book_folder = load_folder_to_local(book_folder)
         num_chapter = len(os.listdir(book_folder))
 
-        
         self.books_data.update(
             {
                 f"book{self.book_max_label + 1}": {
@@ -150,9 +134,6 @@ class Book_shelf:
         for i in range(self.book_max_label + 1):
             new_book_name = f"book{i}"
             if shelf_book_list[i] != new_book_name:
-                #print(self.books_data[f"book{i}"]["folder"])
-                #delete_director(self.books_data[f"book{i}"]["folder"])
-                
                 os.rename(f"./data_json/{shelf_book_list[i]}.json", f"./data_json/{new_book_name}.json")
                 new_keys[f"{shelf_book_list[i]}"] = new_book_name
                 
@@ -162,7 +143,6 @@ class Book_shelf:
         self.sava_json()
         
         logging.info("shelf json:refreshed")
-        # print(new_dict)
         pics_l = os.listdir("pics")
         book_list = [self.books_data[i]["name"] for i in self.books_data]
         logging.info(f"pics:{pics_l}")
@@ -226,14 +206,9 @@ def copy_directory_java(source, destination):
     directory_path = File(app_files_dir, "app/")
     app_path = directory_path.getAbsolutePath()  
     
-    # 获取当前应用的 Java 类名
-    # System = autoclass('java.lang.System')
-    # System.setProperty('java.class.path', f'{app_path}/FolderCopyExample.class')
-    # logging.info(f'FolderCopyExample.class path: {app_path}/FolderCopyExample.class')
     CopyUtils = autoclass('org.open.marpy.FolderCopyExample')
 
     try:
-        # 使用 Pyjnius 调用 Java 方法
         logging.info("start copy")
         source_file = autoclass('java.io.File')(source)
         destination_file = autoclass('java.io.File')( f"{app_path}/{destination}")
@@ -257,22 +232,19 @@ def load_folder_to_local(folder):
 
     files = sorted(os.listdir(local_path))
     for filename in files:
-        # print(filename)
         index = int(re.findall(r'\d+', filename)[0])  # 默认第一个出现的数字为章节数
         new_filename = f"{index:3d}"
         if filename.split(".")[-1] == "pdf":
             new_filename += ".pdf"
         
         os.rename(f"{local_path}/{filename}", f"{local_path}/{new_filename}")
-        # print(f"Renamed {local_path}/{filename} to {local_path}/{new_filename}")
         rename_files_in_folder(f"{local_path}/{new_filename}")
     return f"{local_path}"
 
 
 if __name__ == "__main__":
-    # load_folder_to_local(r"E:\learning_package\kvmd\test\test_y")
-    sh = Book_shelf()
-    sh.refresh_shelf_json()
-    sh.update_cover("book1", "cover/02.jpg")
+    # sh = Book_shelf()
+    # sh.refresh_shelf_json()
+    # sh.update_cover("book1", "cover/02.jpg")
     # sh.delete_book("book3")
-    pass
+    
