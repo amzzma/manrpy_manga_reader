@@ -24,9 +24,11 @@ import re
 from pdf_extract import pdf_pic_write2dir
 from pdf_func import PDFDocumentWidget
 
+from kivy.core.text import LabelBase
+LabelBase.register('Roboto', './fonts/static/NotoSansSC-Regular.ttf')
+
 import logging
 logging.basicConfig(level=logging.INFO)
-
 
 
 if platform == "android":
@@ -45,27 +47,20 @@ def delete_director(path):
                     delete_recursively(child)
             file.delete()
 
-        # 获取当前应用的 Java 类名
         Context = autoclass('android.content.Context')
         File = autoclass('java.io.File')
 
-        # 获取应用程序上下文
         context = cast('android.content.Context', autoclass('org.kivy.android.PythonActivity').mActivity)
-
-        # 获取应用的私有文件目录
         app_files_dir = context.getFilesDir()
 
-        # 构建应用私有文件目录下的 temp 目录
         temp_directory_path = File(app_files_dir, path)
         logging.info(f"temp_directory_path:{temp_directory_path.getAbsolutePath()}")
         
         try:
-            # 调用递归删除方法
             delete_recursively(temp_directory_path)
             print(f"Directory '{temp_directory_path.getAbsolutePath()}' successfully deleted.")
         except Exception as e:
             logging.error(f"{e}")
-            print(f"Error: {e}")
     else:
         import shutil
         shutil.rmtree(path)
@@ -81,10 +76,6 @@ Builder.load_file('KV_UI/mg.kv')
 Builder.load_file('KV_UI/edit_book.kv')
 Builder.load_file('KV_UI/edit_detail_screen.kv')
 Builder.load_file('KV_UI/log.kv')
-
-from kivy.core.text import LabelBase
-
-LabelBase.register('Roboto', './fonts/static/NotoSansSC-Regular.ttf')
 
 
 class book_detail_screen(MDScreen):
@@ -185,16 +176,12 @@ class MangaImage(MDCarousel):
             # on_double_tap=lambda: self.toggle_scale(sca)
         )
         sca = Scatter(do_rotation=False, do_translation_y=True, scale_min=0.5, scale_max=2.0)
-        # sca.on_long_touch = lambda: self.toggle_scale(sca)
-        # card0.on_double_tap = lambda: self.toggle_scale(sca)
         img = AsyncImage(
-            size=window_size,  # ("400dp", "711dp")
-            source=f"{source}",  # 将图片路径替换为实际图像路径
+            size=window_size, 
+            source=f"{source}",
             size_hint=(None, None),
-            fit_mode="contain",  # 允许图像拉伸以填充整个空间
+            fit_mode="contain"
         )
-        # img.allow_stretch_x = True
-        # img.allow_stretch_y = True
 
         sca.add_widget(img)
         card0.add_widget(sca)
@@ -203,9 +190,9 @@ class MangaImage(MDCarousel):
     def toggle_scale(self, scatter):
         # print("tete")
         if scatter.scale == 1.0:
-            scatter.scale = 2.0  # 在双击后将 Scatter 放大
+            scatter.scale = 2.0
         else:
-            scatter.scale = 1.0  # 再次双击后将 Scatter 恢复到原始大小
+            scatter.scale = 1.0
 
 
 class CustomCard(MDCard):
@@ -217,18 +204,12 @@ def get_pixel():
     PythonActivity = autoclass('org.kivy.android.PythonActivity')
     DisplayMetrics = autoclass('android.util.DisplayMetrics')
 
-    # 获取 DisplayMetrics 实例
     display_metrics = DisplayMetrics()
-
-    # 获取屏幕信息
     PythonActivity.mActivity.getWindowManager().getDefaultDisplay().getMetrics(display_metrics)
-
-    # 提取屏幕宽度和高度
     screen_width = display_metrics.widthPixels
     screen_height = display_metrics.heightPixels
 
     return (screen_width, screen_height)
-
 
 
 class App(MDApp):
@@ -286,36 +267,25 @@ class App(MDApp):
         # screen_height = Window.height
         self.window_size = (Window.size[1], Window.size[0])
         self.Toast(f"{self.window_size}")
-        #if platform == "android":
-        #    self.window_size = get_pixel() 
-        # print(self.window_size)
-        # print(f'Screen Size: {Window.width}x{Window.height}')
         if self.device == 0:
             self.window_size = (self.window_size[1], self.window_size[0])
         if self.device == 1:
             self.window_size = (self.window_size[0], self.window_size[1])
-        # print(self.window_size)
 
         Window.size = self.window_size
         self.book_shelf = Book_shelf()
         self.sm = MDScreenManager()
 
         self.book_shelf_screen = book_shelf_screen()
-        # self.book_shelf_screen.ids.grid0.spacing = self.window_size[0] * 0.04
-        # self.book_shelf_screen.ids.grid0.padding = self.window_size[0] * 0.045
         self.sm.add_widget(self.book_shelf_screen)
         self.build_main_screen()
 
         self.add_book = add_book_screen()
         self.add_book.ids.add_book_butt.on_release = self.a_screen_back_main
-        # self.add_book.ids.grid1.spacing = self.window_size[0] * 0.04
-        # self.add_book.ids.grid1.padding = self.window_size[0] * 0.045
         self.sm.add_widget(self.add_book)
 
         self.delete_book = delete_book_screen()
         self.delete_book.ids.del_book_butt.on_release = self.d_screen_back_main
-        # self.delete_book.ids.grid0.spacing = self.window_size[0] * 0.04
-        # self.delete_book.ids.grid0.padding = self.window_size[0] * 0.045
         self.sm.add_widget(self.delete_book)
 
         self.mgs = manga_screen()
@@ -325,8 +295,6 @@ class App(MDApp):
 
         self.edit_book_screen = edit_book_screen()
         self.edit_book_screen.ids.edit_butt.on_release = self.edit_back_main
-        # self.edit_book_screen.ids.grid0.spacing = self.window_size[0] * 0.04
-        # self.edit_book_screen.ids.grid0.padding = self.window_size[0] * 0.045
         self.sm.add_widget(self.edit_book_screen)
 
         return self.sm
@@ -353,7 +321,6 @@ class App(MDApp):
                 size_hint_y=None,
                 size_hint=(None, None),
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),
-                # ("120dp", "213dp"),  # full:("400dp", "711dp")
                 on_release=self.on_cover_touch_card
             )
             grid0 = self.book_shelf_screen.ids.grid0
@@ -367,10 +334,9 @@ class App(MDApp):
 
             img = Image(
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.8),
-                # size=(self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275),  # size=("120dp", "177.5dp"),
-                source=f"{self.book_shelf.books_data[i]['cover_path']}",  # 将图片路径替换为实际图像路径
+                source=f"{self.book_shelf.books_data[i]['cover_path']}", 
                 size_hint=(None, None),
-                fit_mode="fill",  # 允许图像拉伸以填充整个空间
+                fit_mode="fill",
             )
             if self.device == 1:
                 img.size = (self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275)
@@ -379,7 +345,6 @@ class App(MDApp):
                 text=f"{self.book_shelf.books_data[i]['name']}",
                 halign="center",
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.2)
-                # size=(self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275),  # size=("120dp", "35.5dp"),
             )
             if self.device == 1:
                 md_label.size = (self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275)
@@ -409,14 +374,12 @@ class App(MDApp):
                 padding=0,
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),  # size=("120dp", "213dp")
             )
-            # book = Book("02.jpg", f"{i['name']}")
-
             img = Image(
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.8),
-                # size=(self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275),  # size=("120dp", "177.5dp"),
-                source=f"{self.book_detail.book_data[i]['cover_path']}",  # 将图片路径替换为实际图像路径
+                # size=(self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275),
+                source=f"{self.book_detail.book_data[i]['cover_path']}",
                 size_hint=(None, None),
-                fit_mode="fill",  # 允许图像拉伸以填充整个空间
+                fit_mode="fill"
             )
             if self.device == 1:
                 img.size = (self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275)
@@ -425,7 +388,6 @@ class App(MDApp):
                 text=f"{self.book_detail.book_data[i]['name']}",
                 halign="center",
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.2)
-                # size=(self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275),  # size=("120dp", "35.5dp"),
             )
             if self.device == 1:
                 md_label.size = (self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275)
@@ -444,7 +406,7 @@ class App(MDApp):
                 id=f"{card_id}",
                 size_hint_y=None,
                 size_hint=(None, None),
-                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),  # size=("120dp", "213dp"),
+                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275), 
                 on_release=self.on_touch_add_card
             )
             grid1 = self.add_book.ids.grid1
@@ -452,15 +414,14 @@ class App(MDApp):
             box_layout = BoxLayout(
                 orientation='vertical',
                 padding=0,
-                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),  # size=("120dp", "213dp")
+                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),
             )
-            # book = Book("02.jpg", f"{i['name']}")
             aicon = MDIconButton(icon=icon)
             md_label = MDLabel(
                 text=f"{icon}",
                 halign="center",
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.2)
-                # size=(self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275),  # size=("120dp", "35.5dp"),
+                # size=(self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275),
             )
             if self.device == 1:
                 md_label.size = (self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275)
@@ -476,13 +437,12 @@ class App(MDApp):
     def build_delete_screen(self):
         self.delete_book.ids.grid0.spacing = self.window_size[0] * 0.04
         self.delete_book.ids.grid0.padding = self.window_size[0] * 0.045
-        # print(self.book_shelf.books_data)
         for i in self.book_shelf.books_data:
             card2 = MDCard(
                 id=f"{i}",
                 size_hint_y=None,
                 size_hint=(None, None),
-                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),  # size=("120dp", "213dp"),
+                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275), 
                 on_release=self.on_pic_touch_card_delete
             )
             grid0 = self.delete_book.ids.grid0
@@ -490,16 +450,15 @@ class App(MDApp):
             box_layout = BoxLayout(
                 orientation='vertical',
                 padding=0,
-                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),  # size=("120dp", "213dp")
+                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275), 
             )
             # book = Book("02.jpg", f"{i['name']}")
 
             img = Image(
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.8),
-                # size=(self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275),  # size=("120dp", "177.5dp"),
-                source=f"{self.book_shelf.books_data[i]['cover_path']}",  # 将图片路径替换为实际图像路径
+                source=f"{self.book_shelf.books_data[i]['cover_path']}",
                 size_hint=(None, None),
-                fit_mode="fill",  # 允许图像拉伸以填充整个空间
+                fit_mode="fill"
             )
             if self.device == 1:
                 img.size = (self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275)
@@ -508,7 +467,6 @@ class App(MDApp):
                 text=f"{self.book_shelf.books_data[i]['name']}",
                 halign="center",
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.2)
-                # size=(self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275),  # size=("120dp", "35.5dp"),
             )
             if self.device == 1:
                 md_label.size = (self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275)
@@ -526,7 +484,7 @@ class App(MDApp):
                 id=f"{i}",
                 size_hint_y=None,
                 size_hint=(None, None),
-                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),  # size=("120dp", "213dp"),
+                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),
                 on_release=self.on_pic_touch_card_edit
             )
 
@@ -535,15 +493,14 @@ class App(MDApp):
             box_layout = BoxLayout(
                 orientation='vertical',
                 padding=0,
-                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),  # size=("120dp", "213dp")
+                size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275),
             )
-            # book = Book("02.jpg", f"{i['name']}")
             img = Image(
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.8),
-                # size=(self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275),  # size=("120dp", "177.5dp"),
-                source=f"{self.book_shelf.books_data[i]['cover_path']}",  # 将图片路径替换为实际图像路径
+                # size=(self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275), 
+                source=f"{self.book_shelf.books_data[i]['cover_path']}",
                 size_hint=(None, None),
-                fit_mode="fill",  # 允许图像拉伸以填充整个空间
+                fit_mode="fill",
             )
             if self.device == 1:
                 img.size = (self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275)
@@ -552,7 +509,6 @@ class App(MDApp):
                 text=f"{self.book_shelf.books_data[i]['name']}",
                 halign="center",
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.2)
-                # size=(self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275),  # size=("120dp", "35.5dp"),
             )
             if self.device == 1:
                 md_label.size = (self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275)
@@ -563,7 +519,6 @@ class App(MDApp):
             grid0.add_widget(card2)
             
     def build_edit_chapter_screen(self, book_id):
-        # print(f'Screen Size: {Window.width}x{Window.height}\nself.size: {self.window_size}')
         def edit_detail_back_main():
             self.sm.current = "screen5"
             self.sm.remove_widget(book_edit_detail_screen)
@@ -594,10 +549,9 @@ class App(MDApp):
 
             img = Image(
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.8),
-                # size=(self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275),  # size=("120dp", "177.5dp"),
-                source=f"{book_detail.book_data[i]['cover_path']}",  # 将图片路径替换为实际图像路径
+                source=f"{book_detail.book_data[i]['cover_path']}",
                 size_hint=(None, None),
-                fit_mode="fill",  # 允许图像拉伸以填充整个空间
+                fit_mode="fill", 
             )
             if self.device == 1:
                 img.size = (self.window_size[0] * 0.275 * 0.8, self.window_size[1] * 0.275)
@@ -606,7 +560,6 @@ class App(MDApp):
                 text=f"{book_detail.book_data[i]['name']}",
                 halign="center",
                 size=(self.window_size[0] * 0.275, self.window_size[1] * 0.275 * 0.2)
-                # size=(self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275),  # size=("120dp", "35.5dp"),
             )
             if self.device == 1:
                 md_label.size = (self.window_size[0] * 0.275 * 0.2, self.window_size[1] * 0.275)
@@ -619,7 +572,6 @@ class App(MDApp):
 
     def build_edit_detail_screen(self, card_id):
         def edit_cover(mode=1):
-            # print("edit_cover")
             try:
                 self.open_file_manager(card_id, mode=mode)
             except Exception as e:
@@ -642,7 +594,6 @@ class App(MDApp):
         self.sm.current = "screen6"
 
     def on_cover_touch_card(self, card):
-        # print(card.id.split("book")[-1])
         book_id = card.id.split("book")[-1]
 
         self.book_detail = Book_detail(f"./data_json/book{book_id}.json")
@@ -654,11 +605,9 @@ class App(MDApp):
         self.sm.current = "screen0"
 
     def on_pic_touch_card_edit(self, card):
-        # print("edit", card.id)
         self.build_edit_detail_screen(card.id)
 
     def on_pic_touch_card_delete(self, card):
-        # print("delete", card.id)
         try:
             self.book_shelf.delete_book(f"{card.id}")
         except Exception as e:
@@ -671,8 +620,6 @@ class App(MDApp):
         self.update_delete()
 
     def on_touch_add_card(self, card):
-        # print(card.id)
-        # print("图像卡被触摸了")
         if card.id == "a_card0":
             self.add_book_type = "folder"
         elif card.id == "a_card1":
@@ -689,14 +636,9 @@ class App(MDApp):
         self.Toast(self.add_book_type)
 
     def on_chapter_touch_card(self, card):
-        print(card.id)
-        # print("图像卡被触摸了")
         self.create_mange(card.id)
 
-
     def callback_l(self, button):
-        # print(dir(button))
-        # print(button.bind)
         self.menu_l.caller = button
         self.menu_l.open()
 
@@ -707,23 +649,19 @@ class App(MDApp):
     def menu_callback_add_book(self, *args):
         self.menu_l.dismiss()
         self.sm.current = "screen1"
-        # print("add_book")
         self.build_add_screen()
 
     def menu_callback_delete_book(self, *args):
         self.menu_l.dismiss()
         self.sm.current = "screen4"
-        # print("delete_book")
         self.build_delete_screen()
 
     def menu_callback_more_l(self, *args):
         self.menu_l.dismiss()
-        # self.Toast("more")
         self.log = log_screen()
         self.log.ids.log_butt.on_release = self.more_back_main
         self.sm.add_widget(self.log)
         self.sm.current = "screen8"
-        # print("more_l")
 
     def more_back_main(self):
         self.sm.remove_widget(self.log)
@@ -733,12 +671,10 @@ class App(MDApp):
         self.menu_l.dismiss()
         self.build_edit_screen()
         self.sm.current = "screen5"
-        # print("edit book")
 
     def menu_callback_setting(self, *args):
         self.menu_r.dismiss()
         self.Toast("setting")
-        # print("setting")
 
     def create_mange(self, book_id):
     
@@ -752,30 +688,25 @@ class App(MDApp):
                 return True
             return False
 
+        ## in dev
         def on_keyboard(instance, keyboard, keycode, text, modifiers):
-            # 捕获音量键事件并调用相应的翻页方法
             logging.info(f"on_keyboard: {keyboard}, {keycode}, {text}")
             if keycode == 128 and self.sm.current == "screen2":
-                # self.Toast("volumeup")
                 self.carousel.load_previous()
                 return True
             elif keycode == 129 and self.sm.current == "screen2":
-                # self.Toast("volumedown")
                 self.carousel.load_next()
                 return True
             return False
 
         self.book = self.book_detail.book_data[book_id]
         self.carousel = self.mgs.ids.carousel
-        # carousel.on_touch_down = lambda x: touch_load_slides(x)
         
-
         if self.book["book_type"] == "pdf":
             if hasattr(self, "ps"):
                 self.sm.remove_widget(self.ps)
                 print("yes")
             pdf_path = f"{book['book_path']}"
-            # print("pdf_path:", pdf_path)
             self.ps = pdf_screen(pdf_path, self.sm)
             self.ps.name = "screen7"
             self.sm.add_widget(self.ps)
@@ -789,7 +720,6 @@ class App(MDApp):
             if page_number % 10 == 0:
                 time.sleep(0.1)
             image_path = f"{self.book['book_path']}/{page_number:04d}.{self.book['book_type']}"
-            # print(f'Screen Size: {Window.width}x{Window.height}\nself.size: {self.window_size}')
             win_size = (Window.width, Window.height)
             self.carousel.add_widget(MangaPage(image=image_path, window_size=win_size))
 
@@ -801,7 +731,6 @@ class App(MDApp):
         self.sm.current = "screen3"
 
     def a_screen_back_main(self):
-        # self.add_book.remove_widget(self.add_book.ids.grid1)
         self.sm.remove_widget(self.add_book)
         self.add_book = add_book_screen()
         self.add_book.ids.add_book_butt.on_release = self.a_screen_back_main
@@ -809,13 +738,6 @@ class App(MDApp):
         self.sm.current = "screen3"
 
     def d_screen_back_main(self):
-        # self.add_book.remove_widget(self.add_book.ids.grid1)
-        # self.update_delete()
-
-        # self.sm.remove_widget(self.delete_book)
-        # self.delete_book = delete_book_screen()
-        # self.delete_book.ids.del_book_butt.on_release = self.d_screen_back_main
-        # self.sm.add_widget(self.delete_book)
         self.update_main_screen()
         self.sm.current = "screen3"
         self.update_delete()
@@ -824,7 +746,6 @@ class App(MDApp):
         self.update_main_screen()
         self.sm.current = "screen3"
         self.update_edit_screen()
-        # self.sm.remove_widget(self.edit_book_screen)
 
     def edit_detail_back_main(self):
         self.update_main_screen()
@@ -842,14 +763,11 @@ class App(MDApp):
         self.sm.current = "screen0"
 
     def add_book_by_folder(self, folder):
-        # print("add_book_by_folder")
-        # print(folder)
         self.book_shelf.load_a_book(folder)
         self.Toast("add a book")
         self.update_main_screen()
 
     def add_book_by_zip(self, path):
-        # print(f"add_book_by_zip:{path}")
         def support_gbk(zip_file: zipfile.ZipFile):
             name_to_info = zip_file.NameToInfo
             # copy map first
@@ -873,7 +791,6 @@ class App(MDApp):
 
     def add_book_by_pdf(self, path):
         def extract_numbers(s):
-            # 使用正则表达式提取字符串中的数字部分
             numbers = re.findall(r'\d+', s)
             return tuple(map(int, numbers)) if numbers else ()
     
@@ -896,16 +813,9 @@ class App(MDApp):
                 return zip_file
 
             with support_gbk(zipfile.ZipFile(rf'{path}', "r")) as zfp:
-                # extracted_files = zfp.namelist()[0]
                 extracted_files = name
                 path = "temp/" + extracted_files.split("/")[0].split("\\")[0] + "(zip)"
                 zfp.extractall(path)
-                
-
-                #if os.path.exists(path):
-                #    shutil.rmtree(path)
-
-                # os.rename("temp/"+extracted_files.split("/")[0].split("\\")[0], path)
 
         p = f"temp/{name}"
         if not os.path.exists(p):
@@ -926,7 +836,6 @@ class App(MDApp):
 
         self.book_shelf.load_a_book(f"{p}", mode=0)
         self.update_main_screen()
-        # print("add_book_by_pdf")
         self.Toast("add a book")
 
     def update_main_screen(self):  # just reload
@@ -942,10 +851,8 @@ class App(MDApp):
                 if page_number % 10 == 0:
                     time.sleep(0.1)
                 image_path = f"{self.book['book_path']}/{page_number:04d}.{self.book['book_type']}"
-                # print(f'Screen Size: {Window.width}x{Window.height}\nself.size: {self.window_size}')
                 win_size = (Window.width, Window.height)
                 self.carousel.add_widget(MangaPage(image=image_path, window_size=win_size))
-            #self.Toast("add")
             
     def update_page_indicator(self, current_page):
         page_indicator = self.mgs.ids.page_indicator
@@ -965,7 +872,6 @@ class App(MDApp):
         self.add_book = add_book_screen()
         self.add_book.ids.add_book_butt.on_release = self.a_screen_back_main
         self.sm.add_widget(self.add_book)
-        # print(123)
 
     def update_delete(self):
         self.sm.remove_widget(self.delete_book)
@@ -1014,12 +920,7 @@ class App(MDApp):
             from android.storage import primary_external_storage_path
             primary_ext_storage = primary_external_storage_path()
             self.Toast(primary_ext_storage)
-
             self.file_manager.show(primary_ext_storage)
-
-            # app_path = os.path.dirname(os.path.abspath(__file__))
-            # self.file_manager.show(os.path.expanduser(app_path))
-            # print(app_path)
 
         else:
             self.file_manager.show(os.path.expanduser("~"))
@@ -1028,7 +929,7 @@ class App(MDApp):
 
     def exit_manager(self, *args):
         self.file_manager.close()
-        self.file_manager = None  # 清除 file_manager 引用
+        self.file_manager = None
 
     def add_select_path(self, path):
         self.file_manager.close()
@@ -1070,7 +971,6 @@ class App(MDApp):
         
     def cover_select_path(self, path):
         self.file_manager.close()
-        # print(path)
         self.book_shelf.update_cover(self.edit_cover_card_id, path)
         self.update_main_screen()
         self.book_shelf.refresh_shelf()
@@ -1079,7 +979,6 @@ class App(MDApp):
         self.file_manager.close()
         book = Book_detail(f"data_json/{book_id}.json")
         book.update_cover(chapter_id, path)
-        # print(book.book_data)
     
     def get_android_version(self):
         if platform == "android":
